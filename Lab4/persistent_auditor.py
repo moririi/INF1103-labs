@@ -48,6 +48,7 @@ def load_inventory():
 inventory = load_inventory()
 deliveries_processed = 0
 failed_entries = 0
+transaction_history = []
 
 while True:
     remaining_capacity = 500 - inventory
@@ -74,7 +75,7 @@ while True:
     # If the new stock is valid, update the inventory and process the delivery
     inventory = proposed_total
     deliveries_processed += 1
-
+    transaction_history.append(stock)
     tax = calculate_tax(stock)
 
     print("Stock added successfully.")
@@ -86,5 +87,6 @@ while True:
         print("\nMaximum inventory capacity reached.")
         break
 
+print("Transaction history:", transaction_history)
 # Generate final report
 generate_report(inventory, deliveries_processed, failed_entries)
