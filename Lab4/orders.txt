@@ -1,0 +1,5 @@
+1001,Laptop,1
+1002,Iphone,2
+1003,Samsung,3
+1004,computah,100
+1005,apol,20

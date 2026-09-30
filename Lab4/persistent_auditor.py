@@ -61,10 +61,11 @@ def get_quantity():
             return int(quantity)
 
 
-def save_inventory(order):
-    """Append one order to the orders file."""
-    with open(ORDERS_FILE, "a") as file:
-        file.write(",".join(order) + "\n")
+def save_inventory(orders):
+    """Write every order in the list back to the orders file."""
+    with open(ORDERS_FILE, "w") as file:
+        for order in orders:
+            file.write(",".join(order) + "\n")
 
 
 # Input: load saved data and ask for the new order
@@ -84,5 +85,5 @@ orders.append(new_order)
 print("\nNew Order Added:")
 print(",".join(new_order))
 
-save_inventory(new_order)
+save_inventory(orders)
 print(f"\nOrder successfully saved to {ORDERS_FILE}")
