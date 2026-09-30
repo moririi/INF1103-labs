@@ -3,3 +3,5 @@
 1003,Samsung,3
 1004,computah,100
 1005,apol,20
+1006,keyboarding,123
+1007,foner,4
