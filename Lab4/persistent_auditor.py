@@ -1,107 +1,88 @@
-MAX_CAPACITY = 500
-
-
-def get_valid_input():
-    failed_attempts = 0
-
-    while True:
-        stock = input("Enter stock quantity or 'quit': ").strip().lower()
-
-        if stock == "quit":
-            return "quit", failed_attempts
-
-        if stock.startswith("-") and stock[1:].isdigit():
-            print("Negative numbers are not allowed.")
-            failed_attempts += 1
-            continue
-
-        if not stock.isdigit():
-            print("Invalid input. Please enter a whole number.")
-            failed_attempts += 1
-            continue
-
-        return int(stock), failed_attempts
-
-
-def process_delivery(current_total, new_value):
-    return current_total + new_value
-
-
-def calculate_tax(amount):
-    return amount * 0.10
-
-
-def generate_report(total_units, total_deliveries, failed_attempts, history):
-    print("\n--- Final Report ---")
-    print("Total Units Processed:", total_units)
-    print("Total Deliveries Processed:", total_deliveries)
-    print("Number of Failed/Rejected Entries:", failed_attempts)
-    print("Transaction history:", history)
+ORDERS_FILE = "orders.txt"
+FIRST_ORDER_ID = 1001
 
 
 def load_inventory():
+    """Read saved orders from disk into a list of [id, name, quantity]."""
+    orders = []
     try:
-        with open("inventory.txt", "r") as file:
-            total = int(file.readline().strip())
-            history = []
-
+        with open(ORDERS_FILE, "r") as file:
             for line in file:
-                history.append(int(line.strip()))
-
-            return total, history
+                line = line.strip()
+                if line:  # skip blank lines
+                    orders.append(line.split(","))
     except FileNotFoundError:
-        return 0, []
+        pass  # no file yet -> start with an empty order list
+    return orders
 
 
-def save_inventory(total, history):
-    with open("inventory.txt", "w") as file:
-        file.write(f"{total}\n")
+def display_orders(orders):
+    """Print every order currently in the list."""
+    print("Current Orders:\n")
+    if not orders:
+        print("(no orders yet)")
+    for order in orders:
+        print(", ".join(order))
 
-        for amount in history:
-            file.write(f"{amount}\n")
+
+def generate_new_id(orders):
+    """Return the highest existing order ID + 1."""
+    if not orders:
+        return FIRST_ORDER_ID
+    ids = []
+    for order in orders:
+        ids.append(int(order[0]))  # convert: max() on strings compares alphabetically
+    return max(ids) + 1
 
 
-# Load saved data before accepting new deliveries
-inventory, transaction_history = load_inventory()
-deliveries_processed = len(transaction_history)
-failed_entries = 0
+def get_product_name():
+    """Ask for a product name until a non-empty, comma-free one is given."""
+    while True:
+        name = input("Enter Product Name: ").strip()
+        if not name:
+            print("Product name cannot be empty.")
+        elif "," in name:
+            print("Product name cannot contain commas.")
+        else:
+            return name
 
-while True:
-    remaining_capacity = MAX_CAPACITY - inventory
-    print("\nRemaining capacity:", remaining_capacity, "units")
 
-    if inventory == MAX_CAPACITY:
-        print("Maximum inventory capacity reached.")
-        break
+def get_quantity():
+    """Ask for a quantity until a positive whole number is given."""
+    while True:
+        quantity = input("Enter Quantity: ").strip()
+        if quantity.startswith("-") and quantity[1:].isdigit():
+            print("Negative numbers are not allowed.")
+        elif not quantity.isdigit():
+            print("Invalid input. Please enter a whole number.")
+        elif int(quantity) == 0:
+            print("Quantity must be at least 1.")
+        else:
+            return int(quantity)
 
-    stock, new_failed_attempts = get_valid_input()
-    failed_entries += new_failed_attempts
 
-    if stock == "quit":
-        break
+def save_inventory(order):
+    """Append one order to the orders file."""
+    with open(ORDERS_FILE, "a") as file:
+        file.write(",".join(order) + "\n")
 
-    proposed_total = process_delivery(inventory, stock)
 
-    if proposed_total > MAX_CAPACITY:
-        print("Delivery rejected.")
-        print("You can only add up to", remaining_capacity, "more units.")
-        failed_entries += 1
-        continue
+# Input: load saved data and ask for the new order
+orders = load_inventory()
+display_orders(orders)
+print()
 
-    inventory = proposed_total
-    transaction_history.append(stock)
-    deliveries_processed += 1
+product_name = get_product_name()
+quantity = get_quantity()
 
-    tax = calculate_tax(stock)
-    print("Stock added successfully.")
-    print("Delivery tax:", f"${tax:.2f}")
-    print("Current inventory:", inventory, "units")
+# Process: build the new order and add it to the list
+new_id = generate_new_id(orders)
+new_order = [str(new_id), product_name, str(quantity)]
+orders.append(new_order)
 
-# Both 'quit' and reaching capacity lead here
-save_inventory(inventory, transaction_history)
-generate_report(
-    inventory,
-    deliveries_processed,
-    failed_entries,
-    transaction_history,
-)
+# Output: confirm and write to disk
+print("\nNew Order Added:")
+print(",".join(new_order))
+
+save_inventory(new_order)
+print(f"\nOrder successfully saved to {ORDERS_FILE}")
