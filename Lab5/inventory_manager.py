@@ -27,7 +27,12 @@ def load_inventory():
     return [dict(p) for p in DEFAULT_INVENTORY]
  
 
+def save_inventory(inventory):
+    """Write the whole inventory list to inventory.json."""
+    with open(INVENTORY_FILE, "w") as file:
+        json.dump(inventory, file, indent=4)
 
+        
 
 # - Input stuff 
 def get_text(prompt):
@@ -129,6 +134,3 @@ def show_search(inventory):
     print(f"Stock: {product['stock']}")
     print(LINE)
  
-
-inventory = load_inventory()
-display_all(inventory)
