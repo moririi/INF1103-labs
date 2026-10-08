@@ -32,7 +32,7 @@ def save_inventory(inventory):
     with open(INVENTORY_FILE, "w") as file:
         json.dump(inventory, file, indent=4)
 
-        
+
 
 # - Input stuff 
 def get_text(prompt):
@@ -133,4 +133,53 @@ def show_search(inventory):
     print(f"Price: ${product['price']:.2f}")
     print(f"Stock: {product['stock']}")
     print(LINE)
+
+
+
+ # - Menu shii
+def print_menu():
+    print("- MENU -----------")
+    print("1.  Display All Products")
+    print("2.  Add Product")
+    print("3.  Update Stock")
+    print("4.  Search Product")
+    print("5.  Save Inventory")
+    print("6.  Exit")
+    print("----------------------------")
  
+ 
+def main():
+    print("=" * 40)
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("=" * 40)
+    inventory = load_inventory()
+    print_menu()
+ 
+    while True:
+        choice = input("Enter option: ").strip()
+        if choice == "1":
+            display_all(inventory)
+        elif choice == "2":
+            add_product(inventory)
+        elif choice == "3":
+            update_stock(inventory)
+        elif choice == "4":
+            show_search(inventory)
+        elif choice == "5":
+            print("Saving inventory...")
+            save_inventory(inventory)
+            print(f"Inventory saved successfully to {INVENTORY_FILE}.")
+        elif choice == "6":
+            print("Saving inventory before exit...")
+            save_inventory(inventory)
+            print("Inventory saved successfully.")
+            print("Thank you for using Inventory Management System.")
+            print("Program terminated.")
+            break
+        else:
+            print("Invalid option.  Please enter 1-6.")
+            print_menu()
+ 
+ 
+if __name__ == "__main__":
+    main()
