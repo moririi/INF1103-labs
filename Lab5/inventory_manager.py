@@ -21,7 +21,7 @@ def load_inventory():
             print("Inventory loaded successfully.")
             return inventory
         except json.JSONDecodeError:
-            print(f"{INVENTORY_FILE} is empty or corrupted.  Starting with default inventory.")
+            print(f"{INVENTORY_FILE} is empty or having issues.  Starting with default inventory.")
             return [dict(p) for p in DEFAULT_INVENTORY]
     print(f"{INVENTORY_FILE} not found.  Starting with default inventory.")
     return [dict(p) for p in DEFAULT_INVENTORY]
@@ -86,7 +86,7 @@ def search_product(inventory, product_id):
  
  
 def add_product(inventory):
-    "Ask for a new product's details and append it to the inventory.""
+    """Ask for a new product's details and append it to the inventory."""
     print("Add New Product")
     product_id = get_text("Product ID: ").upper()
     if search_product(inventory, product_id) is not None:
@@ -115,7 +115,7 @@ def update_stock(inventory):
  
  
 def show_search(inventory):
-    Menu wrapper: ask for an ID and print the matching product
+    """Menu wrapper: ask for an ID and print the matching product."""
     print("Search Product")
     product = search_product(inventory, get_text("Enter Product ID: "))
     if product is None:
