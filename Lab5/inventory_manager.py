@@ -1,0 +1,134 @@
+import json
+import os
+ 
+INVENTORY_FILE = "inventory.json"
+LINE = "-" * 48
+
+#Starting inventory data when inventory.json does not exist
+DEFAULT_INVENTORY = [
+    {"id": "P001", "name": "Laptop", "price": 1200.00, "stock": 15},
+    {"id": "P002", "name": "Mouse", "price": 25.50, "stock": 40},
+    {"id": "P003", "name": "Keyboard", "price": 45.00, "stock": 25},
+]
+
+def load_inventory():
+    """Load inventory.json if it exists, otherwise start from the default products."""
+    if os.path.exists(INVENTORY_FILE):
+        print(f"{INVENTORY_FILE} found.")
+        try:
+            with open(INVENTORY_FILE, "r") as file:
+                inventory = json.load(file)
+            print("Inventory loaded successfully.")
+            return inventory
+        except json.JSONDecodeError:
+            print(f"{INVENTORY_FILE} is empty or corrupted.  Starting with default inventory.")
+            return [dict(p) for p in DEFAULT_INVENTORY]
+    print(f"{INVENTORY_FILE} not found.  Starting with default inventory.")
+    return [dict(p) for p in DEFAULT_INVENTORY]
+ 
+
+
+
+# - Input stuff 
+def get_text(prompt):
+    """Ask until a non-empty string is entered."""
+    while True:
+        value = input(prompt).strip()
+        if value:
+            return value
+        print("Input cannot be empty.")
+ 
+ 
+def get_price(prompt):
+    """Ask until a positive number is entered."""
+    while True:
+        try:
+            price = float(input(prompt).strip())
+        except ValueError:
+            print("Invalid input.  Please enter a number.")
+            continue
+        if price <= 0:
+            print("Price must be greater than 0.")
+        else:
+            return price
+ 
+ 
+def get_stock(prompt):
+    """Ask until a whole number of 0 or more is entered (0 = sold out)."""
+    while True:
+        value = input(prompt).strip()
+        if not value.isdigit():
+            print("Invalid input.  Please enter a whole number of 0 or more.")
+        else:
+            return int(value)
+
+
+ 
+# - CRUD functions
+def display_all(inventory):
+    """Print every product in the inventory."""
+    print("Current Inventory")
+    print(LINE)
+    if not inventory:
+        print("(no products yet)")
+    for p in inventory:
+        print(f"ID: {p['id']} | Name: {p['name']} | "
+              f"Price: ${p['price']:.2f} | Stock: {p['stock']}")
+    print(LINE)
+ 
+ 
+def search_product(inventory, product_id):
+    """Return the product dict with this ID, or None if not found."""
+    for p in inventory:
+        if p["id"].upper() == product_id.upper():
+            return p
+    return None
+ 
+ 
+def add_product(inventory):
+    "Ask for a new product's details and append it to the inventory.""
+    print("Add New Product")
+    product_id = get_text("Product ID: ").upper()
+    if search_product(inventory, product_id) is not None:
+        print(f"Product ID {product_id} already exists.")
+        return
+    name = get_text("Product Name: ")
+    price = get_price("Price: ")
+    stock = get_stock("Stock Quantity: ")
+    inventory.append({"id": product_id, "name": name, "price": price, "stock": stock})
+    print("Product added successfully!")
+ 
+ 
+def update_stock(inventory):
+    """Change the stock level of an existing product."""
+    print("Update Stock")
+    product_id = get_text("Enter Product ID: ")
+    product = search_product(inventory, product_id)
+    if product is None:
+        print("Product not found.")
+        return
+    print("Product Found:")
+    print(f"Name: {product['name']}")
+    print(f"Current Stock: {product['stock']}")
+    product["stock"] = get_stock("New Stock Quantity: ")  # edits the dict inside the list
+    print("Stock updated successfully!")
+ 
+ 
+def show_search(inventory):
+    Menu wrapper: ask for an ID and print the matching product
+    print("Search Product")
+    product = search_product(inventory, get_text("Enter Product ID: "))
+    if product is None:
+        print("Product not found.")
+        return
+    print("Product Found")
+    print(LINE)
+    print(f"ID: {product['id']}")
+    print(f"Name: {product['name']}")
+    print(f"Price: ${product['price']:.2f}")
+    print(f"Stock: {product['stock']}")
+    print(LINE)
+ 
+
+inventory = load_inventory()
+display_all(inventory)
