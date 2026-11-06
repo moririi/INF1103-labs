@@ -3,42 +3,48 @@
         "id": "P001",
         "name": "Laptop",
         "price": 1200.0,
-        "stock": 15
+        "stock": 15,
+        "type": "physical",
+        "weight": 2.0
     },
     {
         "id": "P002",
         "name": "Mouse",
         "price": 25.5,
-        "stock": 40
+        "stock": 40,
+        "type": "physical",
+        "weight": 0.1
     },
     {
         "id": "P003",
         "name": "Keyboard",
         "price": 45.0,
-        "stock": 25
+        "stock": 25,
+        "type": "physical",
+        "weight": 0.8
     },
     {
-        "id": "10003",
-        "name": "swass",
-        "price": 20.0,
-        "stock": 20
+        "id": "D001",
+        "name": "Antivirus Licence",
+        "price": 49.9,
+        "stock": 100,
+        "type": "digital",
+        "download_size": 350
     },
     {
         "id": "123",
         "name": "qwe",
-        "price": 20.0,
-        "stock": 2
+        "price": 123.0,
+        "stock": 555,
+        "type": "physical",
+        "weight": 2.0
     },
     {
         "id": "456",
-        "name": "poew",
-        "price": 3000.0,
-        "stock": 9
-    },
-    {
-        "id": "098",
-        "name": "hghgh",
-        "price": 932.0,
-        "stock": 8
+        "name": "poi",
+        "price": 999.0,
+        "stock": 5,
+        "type": "digital",
+        "download_size": 59.0
     }
 ]
