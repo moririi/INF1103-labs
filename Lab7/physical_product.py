@@ -1,6 +1,10 @@
 from product import Product
+from can_be_shipped import CanBeShipped
+ 
+class PhysicalProduct(Product, CanBeShipped):
 
-class PhysicalProduct(Product):
+    BASE_SHIPPING_FEE = 5.00
+    FEE_PER_KG = 2.00
 
     def __init__(self, product_id, name, price, stock, weight):
         super().__init__(product_id, name, price, stock)
@@ -15,3 +19,6 @@ class PhysicalProduct(Product):
 
     def get_fulfilment_info(self):
         return f"{self.get_name()} will be packed and shipped to the customer."
+
+    def calculate_shipping_cost(self):
+        return round(self.BASE_SHIPPING_FEE + self.__weight * self.FEE_PER_KG, 2)
