@@ -1,4 +1,6 @@
-class Product:
+from abc import ABC, abstractmethod
+
+class Product(ABC):
     """Represents ONE product and manages its own state."""
 
     def __init__(self, product_id, name, price, stock):
@@ -36,3 +38,7 @@ class Product:
         """Convert to a dict so it can be saved as JSON."""
         return {"id": self.__product_id, "name": self.__name,
                 "price": self.__price, "stock": self.__stock}
+
+    @abstractmethod
+    def get_fulfilment_info(self):
+        pass

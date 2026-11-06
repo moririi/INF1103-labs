@@ -12,3 +12,6 @@ class PhysicalProduct(Product):
     def display_information(self):
         super().display_information()
         print(f"    Type: Physical | Weight: {self.__weight} kg")
+
+    def get_fulfilment_info(self):
+        return f"{self.get_name()} will be packed and shipped to the customer."
