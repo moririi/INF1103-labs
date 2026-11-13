@@ -108,9 +108,21 @@ def test_lsp() -> None:
     print(f"find_product works for both: {inventory.find_product('P102').get_name()}, "
           f"{inventory.find_product('D002').get_name()}")
 
+def test_polymorphism() -> None:
+    print("\n=== Section 7 - Polymorphism ===")
+    supplier = Supplier("S001", "TechSource Pte Ltd", "sales@techsource.sg")
+    inventory = Inventory("Mixed Inventory")
+    inventory.add_product(PhysicalProduct("P002", "Mouse", 25.50, 40, supplier, 0.1))
+    inventory.add_product(DigitalProduct("D003", "Photo Editor", 120.00, 25, supplier, 1500))
+
+    for product in inventory.get_all_products():
+        product.display_information()
+        print(f"    Fulfilment: {product.get_fulfilment_info()}")
+
 
 if __name__ == "__main__":
     test_association()
     test_aggregation()
     test_composition()
     test_lsp()
+    test_polymorphism()
