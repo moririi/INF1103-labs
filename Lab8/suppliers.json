@@ -1,0 +1,12 @@
+[
+    {
+        "id": "S001",
+        "name": "TechSource Pte Ltd",
+        "email": "sales@techsource.sg"
+    },
+    {
+        "id": "S002",
+        "name": "SoftPlus",
+        "email": "support@softplus.sg"
+    }
+]

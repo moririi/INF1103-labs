@@ -17,3 +17,11 @@ class Supplier:
 
     def display_information(self) -> None:
         print(f"    Supplier: {self.__name} ({self.__supplier_id}) | Email: {self.__contact_email}")
+
+    def to_dict(self) -> dict:
+        return {"id": self.__supplier_id, "name": self.__name,
+                "email": self.__contact_email}
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Supplier":
+        return cls(data["id"], data["name"], data["email"])

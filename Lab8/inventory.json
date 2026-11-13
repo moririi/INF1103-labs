@@ -3,7 +3,8 @@
         "id": "P001",
         "name": "Laptop",
         "price": 1200.0,
-        "stock": 15,
+        "stock": 13,
+        "supplier_id": "S001",
         "type": "physical",
         "weight": 2.0
     },
@@ -12,6 +13,7 @@
         "name": "Mouse",
         "price": 25.5,
         "stock": 40,
+        "supplier_id": "S001",
         "type": "physical",
         "weight": 0.1
     },
@@ -20,6 +22,7 @@
         "name": "Keyboard",
         "price": 45.0,
         "stock": 25,
+        "supplier_id": "S001",
         "type": "physical",
         "weight": 0.8
     },
@@ -27,7 +30,8 @@
         "id": "D001",
         "name": "Antivirus Licence",
         "price": 49.9,
-        "stock": 100,
+        "stock": 97,
+        "supplier_id": "S002",
         "type": "digital",
         "download_size": 350
     },
@@ -36,6 +40,7 @@
         "name": "qwe",
         "price": 123.0,
         "stock": 555,
+        "supplier_id": "S001",
         "type": "physical",
         "weight": 2.0
     },
@@ -44,7 +49,17 @@
         "name": "poi",
         "price": 999.0,
         "stock": 5,
+        "supplier_id": "S002",
         "type": "digital",
         "download_size": 59.0
+    },
+    {
+        "id": "099",
+        "name": "LKD",
+        "price": 23.0,
+        "stock": 100,
+        "supplier_id": "S002",
+        "type": "physical",
+        "weight": 123.0
     }
 ]
