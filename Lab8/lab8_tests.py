@@ -2,6 +2,7 @@ from supplier import Supplier
 from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
+from order import Order
 
 
 def test_association() -> None:
@@ -51,7 +52,39 @@ def test_aggregation() -> None:
     print(f"B is empty ({len(inventory_b.get_all_products())} items) "
           f"but amp still exists: {amp.get_name()}")
 
+def test_composition() -> None:
+    print("\n=== Section 4 - Composition ===")
+    supplier = Supplier("S001", "TechSource Pte Ltd", "sales@techsource.sg")
+    laptop = PhysicalProduct("P001", "Laptop", 1200.00, 15, supplier, 2.0)
+    antivirus = DigitalProduct("D001", "Antivirus Licence", 49.90, 100, supplier, 350)
+
+    order_1 = Order("ORD-001")
+    order_1.add_order_line(laptop, 2)
+    order_1.add_order_line(antivirus, 3)
+    order_1.display_order()
+
+    order_2 = Order("ORD-002")
+    order_2.add_order_line(laptop, 1)
+    order_2.display_order()
+
+    line_1 = order_1.get_order_lines()[0]
+    line_2 = order_2.get_order_lines()[0]
+    print("Same Laptop in two orders:")
+    print(f"  same OrderLine? {line_1 is line_2}  ({id(line_1)} vs {id(line_2)})")
+    print(f"  same Product?   {line_1.get_product() is line_2.get_product()}  "
+          f"({id(line_1.get_product())} vs {id(line_2.get_product())})")
+
+    print("Removing Antivirus line from ORD-001:")
+    order_1.remove_order_line("D001")
+    order_1.display_order()
+
+    print("Cancelling ORD-001:")
+    order_1.cancel()
+    print(f"  ORD-001 lines left: {len(order_1.get_order_lines())}")
+    print(f"  Laptop still exists: {laptop.get_name()}, stock {laptop.get_stock()}")
+
 
 if __name__ == "__main__":
     test_association()
     test_aggregation()
+    test_composition()
