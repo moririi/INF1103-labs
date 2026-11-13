@@ -3,6 +3,7 @@ from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
 from order import Order
+from product import Product
 
 
 def test_association() -> None:
@@ -83,8 +84,33 @@ def test_composition() -> None:
     print(f"  ORD-001 lines left: {len(order_1.get_order_lines())}")
     print(f"  Laptop still exists: {laptop.get_name()}, stock {laptop.get_stock()}")
 
+def show_product_details(product: Product) -> None:
+    product.display_information()
+    print(f"    Fulfilment: {product.get_fulfilment_info()}")
+
+
+def test_lsp() -> None:
+    print("\n=== Section 6 - Liskov Substitution ===")
+    supplier = Supplier("S002", "SoftPlus", "support@softplus.sg")
+    picks = PhysicalProduct("P102", "Guitar Picks", 4.90, 100, supplier, 0.1)
+    vpn = DigitalProduct("D002", "VPN 6-Month Plan", 35.00, 40, supplier, 80)
+
+    for product in (picks, vpn):
+        show_product_details(product)
+        ok = product.update_stock(20)
+        print(f"    update_stock(20) -> {ok}, stock now {product.get_stock()}")
+        ok = product.update_stock(-5)
+        print(f"    update_stock(-5) -> {ok}, stock still {product.get_stock()}\n")
+
+    inventory = Inventory("LSP Inventory")
+    inventory.add_product(picks)
+    inventory.add_product(vpn)
+    print(f"find_product works for both: {inventory.find_product('P102').get_name()}, "
+          f"{inventory.find_product('D002').get_name()}")
+
 
 if __name__ == "__main__":
     test_association()
     test_aggregation()
     test_composition()
+    test_lsp()
