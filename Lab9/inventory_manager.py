@@ -54,7 +54,10 @@ def build_inventory(data: list[dict], suppliers: dict[str, Supplier]) -> Invento
                                             p["price"], p["stock"], supplier,
                                             weight=p.get("weight", 0.0),
                                             download_size=p.get("download_size", 0.0))
-        except (ValueError, KeyError) as error:
+        except KeyError as error:
+            print(f"Skipped {p.get('id')}: missing field {error}")
+            continue
+        except ValueError as error:
             print(f"Skipped {p.get('id')}: {error}")
             continue
         inventory.add_product(product)
