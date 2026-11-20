@@ -31,8 +31,3 @@ class PhysicalProduct(Product, CanBeShipped):
         data["type"] = "physical"
         data["weight"] = self.__weight
         return data
-
-    @classmethod
-    def from_dict(cls, data: dict, supplier: Supplier) -> "PhysicalProduct":
-        return cls(data["id"], data["name"], data["price"], data["stock"],
-                   supplier, data["weight"])

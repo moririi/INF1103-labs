@@ -24,8 +24,3 @@ class DigitalProduct(Product):
         data["type"] = "digital"
         data["download_size"] = self.__download_size
         return data
-
-    @classmethod
-    def from_dict(cls, data: dict, supplier: Supplier) -> "DigitalProduct":
-        return cls(data["id"], data["name"], data["price"], data["stock"],
-                   supplier, data["download_size"])
