@@ -32,7 +32,6 @@ def test_factory_ignores_case_and_spaces() -> None:
 
 
 def test_unknown_type_raises_value_error() -> None:
-    # Predict first 3.2: "service" isn't a known type
     try:
         ProductFactory.create("service", "S001", "Installation", 30.00, 5, SUPPLIER)
         assert False, "should have raised ValueError"
@@ -41,7 +40,6 @@ def test_unknown_type_raises_value_error() -> None:
 
 
 def test_manager_creates_products_through_factory() -> None:
-    # nothing in inventory_manager.py should build products directly any more
     source = (Path(__file__).resolve().parent.parent / "inventory_manager.py").read_text()
     assert "ProductFactory.create" in source
     assert "PhysicalProduct(" not in source
