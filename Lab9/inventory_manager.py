@@ -1,3 +1,4 @@
+import csv
 import json
 import os
 from supplier import Supplier
@@ -9,8 +10,6 @@ from order import Order
 
 INVENTORY_FILE = "inventory.json"
 SUPPLIER_FILE = "suppliers.json"
-
-
 
 DEFAULT_SUPPLIERS = [
     {"id": "S001", "name": "TechSource Pte Ltd", "email": "sales@techsource.sg"},
@@ -55,6 +54,7 @@ def build_inventory(data: list[dict], suppliers: dict[str, Supplier]) -> Invento
                                             weight=p.get("weight", 0.0),
                                             download_size=p.get("download_size", 0.0))
         except KeyError as error:
+            # one bad entry shouldn't stop the whole inventory from loading
             print(f"Skipped {p.get('id')}: missing field {error}")
             continue
         except ValueError as error:
@@ -77,6 +77,33 @@ def save_all(inventory: Inventory, suppliers: dict[str, Supplier]) -> None:
         json.dump([s.to_dict() for s in suppliers.values()], file, indent=4)
 
 
+def load_products(path: str, inventory: Inventory, supplier: Supplier) -> None:
+    """Read products from a CSV file. Bad rows are reported and skipped."""
+    loaded = 0
+    try:
+        file = open(path, newline="")
+    except FileNotFoundError:
+        print(f"Products file not found: {path}")
+    else:
+        with file:
+            reader = csv.reader(file)
+            next(reader, None)  # skip the header row
+            for line_number, row in enumerate(reader, start=2):
+                try:
+                    product_type, product_id, name, price, stock = row
+                    product = ProductFactory.create(product_type, product_id, name,
+                                                    float(price), int(stock), supplier)
+                except ValueError as error:
+                    # one bad row is reported, then we carry on with the next one
+                    print(f"Skipped line {line_number} {row}: {error}")
+                    continue
+                inventory.add_product(product)
+                loaded += 1
+        print(f"{loaded} products loaded.")
+    finally:
+        print("Load attempt finished.")
+
+
 def get_text(prompt: str) -> str:
     while True:
         value = input(prompt).strip()
@@ -85,17 +112,17 @@ def get_text(prompt: str) -> str:
         print("Input cannot be empty.")
 
 
-def get_positive_number(prompt: str) -> float:
+def get_positive_float(prompt: str) -> float:
+    """Keep asking until the user types a number greater than zero."""
     while True:
         try:
-            number = float(input(prompt).strip())
+            value = float(input(prompt))
+            if value <= 0:
+                print("Please enter a number greater than zero.")
+                continue
+            return value
         except ValueError:
-            print("Invalid input.  Please enter a number.")
-            continue
-        if number <= 0:
-            print("Value must be greater than 0.")
-        else:
-            return number
+            print("Please enter a valid number, e.g. 12.50")
 
 
 def get_stock(prompt: str) -> int:
@@ -136,16 +163,16 @@ def add_product(inventory: Inventory, suppliers: dict[str, Supplier]) -> None:
         print(f"Product ID {product_id} already exists.")
         return
     name = get_text("Product Name: ")
-    price = get_positive_number("Price: ")
+    price = get_positive_float("Price: ")
     stock = get_stock("Stock Quantity: ")
     supplier = choose_supplier(suppliers)
 
     weight = 0.0
     download_size = 0.0
     if product_type == "physical":
-        weight = get_positive_number("Weight (kg): ")
+        weight = get_positive_float("Weight (kg): ")
     else:
-        download_size = get_positive_number("Download Size (MB): ")
+        download_size = get_positive_float("Download Size (MB): ")
 
     product = ProductFactory.create(product_type, product_id, name, price, stock,
                                     supplier, weight=weight, download_size=download_size)
